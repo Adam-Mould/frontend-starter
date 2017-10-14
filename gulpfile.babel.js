@@ -16,6 +16,7 @@ import sass from 'gulp-sass';
 import sassLint from 'gulp-sass-lint';
 import source from 'vinyl-source-stream';
 import sourcemaps from 'gulp-sourcemaps';
+import uglify from 'rollup-plugin-uglify';
 
 const paths = {
     styles: {
@@ -67,28 +68,56 @@ export const styles = () => {
         .pipe(gulp.dest(paths.styles.dest));
 };
 
+export const lint = () => {
+    return gulp.src('assets/scss/**/*.scss')
+        .pipe(sassLint())
+        .pipe(sassLint.format());
+};
+
 /**
  * Module bundle JS using RollupJS
  */
+const rollupPlugins = (dev = false) => {
+    const plugins = [
+        eslint({
+            throwOnWarning: !dev,
+            throwOnError: !dev,
+        }),
+        resolve(),
+        json(),
+        babel({
+            exclude: 'node_modules/**',
+        }),
+    ];
+
+    if (!dev) {
+        plugins.push(uglify());
+    }
+
+    return plugins;
+};
+
 export const scripts = () => {
     const dev = process.env.NODE_ENV === 'development';
 
     return rollup({
-        entry: paths.scripts.entry,
+        input: paths.scripts.entry,
         format: 'iife',
-        moduleName: 'library',
-        sourceMap: dev,
-        plugins: [
-            eslint({
-                throwOnWarning: !dev,
-                throwOnError: !dev,
-            }),
-            resolve(),
-            json(),
-            babel({
-                exclude: 'node_modules/**',
-            }),
+        name: 'library',
+        sourcemap: dev,
+        plugins: rollupPlugins(dev),
+        external: [
+            'jquery'
         ],
+        globals: {
+            jquery: 'jQuery',
+        },
+        onwarn: (warning) => {
+            if (warning.code === 'THIS_IS_UNDEFINED') {
+                return;
+            }
+            console.error(warning.message);
+        },
     })
     .pipe(source('index.js'))
     .pipe(gulp.dest(paths.scripts.dest));
