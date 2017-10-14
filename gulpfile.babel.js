@@ -38,8 +38,8 @@ export const clean = () => del(['dist']);
  */
 const postcssPlugins = (dev = false) => {
     const plugins = [
-        autoprefixer({browsers: ['last 10 versions', 'ie >= 10']}),
-        pixrem(),
+        autoprefixer({ browsers: ['last 10 versions', 'ie >= 10'] }),
+        pixrem({ rootValue: 10 }),
     ];
 
     if (!dev) {
