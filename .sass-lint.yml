@@ -5,3 +5,11 @@ rules:
     - 1
     -
       size: 4
+  nesting-depth:
+    - 1
+    -
+      max-depth: 4
+  property-sort-order: 0
+  no-color-literals: 0
+  no-transition-all: 0
+  mixins-before-declarations: 0

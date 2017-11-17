@@ -59,11 +59,14 @@ export const styles = () => {
         .pipe(sass({
             includePaths: [
                 require('node-bourbon').includePaths,
-                'node_modules/bootstrap/scss/',
+                'node_modules',
             ],
             outputStyle: dev ? 'nested' : 'compressed',
         }).on('error', sass.logError))
-        .pipe(gulpif(dev, sourcemaps.write()))
+        .pipe(gulpif(dev, sourcemaps.write({
+            includeContent: false,
+            sourceRoot: '.'
+        })))
         .pipe(postcss(postcssPlugins(dev)))
         .pipe(gulp.dest(paths.styles.dest));
 };

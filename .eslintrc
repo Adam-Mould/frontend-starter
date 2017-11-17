@@ -2,6 +2,13 @@
     "extends": "airbnb-base",
     "rules": {
         "indent": ["error", 4],
-        "func-names": ["error", "never"]
-    }
+        "func-names": ["error", "never"],
+        "linebreak-style": 0,
+        "no-debugger": 1,
+        "no-new": 0,
+        "no-unused-vars": 1
+    },
+    "env": {
+        "browser": true,
+    },
 }
